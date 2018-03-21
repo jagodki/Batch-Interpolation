@@ -1,0 +1,39 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Batch-Interpolation
+qgisMinimumVersion=2.0
+description=create a batch process for the QGIS Raster Interpolation
+version=1.0.0
+author=Christoph Jung
+email=jagodki.cj@gmail.com
+
+about=Provide a brief description of the plugin and its purpose.
+
+tracker=https://github.com/jagodki/Batch-Interpolation/issues
+repository=https://github.com/jagodki/Batch-Interpolation
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=point, vector, point, interpolation, TIN, IDW, contour, isolines
+
+homepage=https://github.com/jagodki/Batch-Interpolation
+category=Raster
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
