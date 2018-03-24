@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>690</width>
-    <height>358</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,27 +19,27 @@
      <x>9</x>
      <y>9</y>
      <width>674</width>
-     <height>341</height>
+     <height>360</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_main">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_input">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="groupBox_input">
         <property name="title">
          <string>Input</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <layout class="QVBoxLayout" name="verticalLayout_input_2">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
-              <widget class="QLabel" name="label">
+              <widget class="QLabel" name="label_layer">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -58,12 +58,12 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox"/>
+              <widget class="QComboBox" name="comboBox_layers"/>
              </item>
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="label_attributes">
              <property name="text">
               <string>Check attributes for interpolation:</string>
              </property>
@@ -72,7 +72,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <widget class="QTableWidget" name="tableWidget">
+              <widget class="QTableWidget" name="tableWidget_attributes">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -93,7 +93,7 @@
                </property>
                <column>
                 <property name="text">
-                 <string/>
+                 <string>Interpolation</string>
                 </property>
                </column>
                <column>
@@ -115,7 +115,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
-       <widget class="QGroupBox" name="groupBox_3">
+       <widget class="QGroupBox" name="groupBox_setting">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -131,24 +131,30 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
-              <widget class="QLabel" name="label_2">
+              <widget class="QLabel" name="label_method">
                <property name="text">
                 <string>Method:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton_2">
+              <widget class="QRadioButton" name="radioButton_idw">
                <property name="text">
                 <string>IDW</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup_method</string>
+               </attribute>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton">
+              <widget class="QRadioButton" name="radioButton_tin">
                <property name="text">
                 <string>TIN</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup_method</string>
+               </attribute>
               </widget>
              </item>
              <item>
@@ -169,7 +175,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
-              <widget class="QLabel" name="label_3">
+              <widget class="QLabel" name="label_pixelSize">
                <property name="maximumSize">
                 <size>
                  <width>75</width>
@@ -182,49 +188,49 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox"/>
+              <widget class="QSpinBox" name="spinBox_pixelSize"/>
              </item>
             </layout>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="checkBox_contourLines">
                <property name="text">
                 <string>create contour lines after interpoaltion using GDAL</string>
                </property>
               </widget>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Distance between contour lines:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_contourLines">
+               <property name="text">
+                <string>Distance between contour lines:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_contourLines"/>
              </item>
             </layout>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
-              <widget class="QLabel" name="label_5">
+              <widget class="QLabel" name="label_output">
                <property name="text">
                 <string>Output:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit"/>
+              <widget class="QLineEdit" name="lineEdit_output"/>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="pushButton_output">
                <property name="text">
                 <string>...</string>
                </property>
@@ -258,7 +264,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="pushButton_start">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -277,4 +283,7 @@
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup_method"/>
+ </buttongroups>
 </ui>
