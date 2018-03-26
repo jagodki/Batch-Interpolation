@@ -25,8 +25,9 @@ from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
-from batch-interpolation_dialog import BatchInterpolationDialog
+from batch_interpolation_dialog import BatchInterpolationDialog
 import os.path
+from processing import controller
 
 
 class BatchInterpolation:
@@ -61,7 +62,7 @@ class BatchInterpolation:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Batch-Interpolation')
+        self.menu = self.tr(u'&Batch Interpolation')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'BatchInterpolation')
         self.toolbar.setObjectName(u'BatchInterpolation')

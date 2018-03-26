@@ -31,5 +31,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgisInterface
     """
     #
-    from .batch-interpolation import BatchInterpolation
+    from .batch_interpolation import BatchInterpolation
     return BatchInterpolation(iface)

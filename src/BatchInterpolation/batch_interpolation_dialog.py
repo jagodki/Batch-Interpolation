@@ -26,7 +26,7 @@ import os
 from PyQt4 import QtGui, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'batch-interpolation_dialog_base.ui'))
+    os.path.dirname(__file__), 'batch_interpolation_dialog_base.ui'))
 
 
 class BatchInterpolationDialog(QtGui.QDialog, FORM_CLASS):

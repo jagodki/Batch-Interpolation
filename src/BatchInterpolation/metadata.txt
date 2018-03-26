@@ -7,7 +7,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Batch-Interpolation
+name=Batch Interpolation
 qgisMinimumVersion=2.0
 description=create a batch process for the QGIS Raster Interpolation
 version=1.0.0
