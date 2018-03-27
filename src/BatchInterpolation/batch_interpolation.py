@@ -59,13 +59,20 @@ class BatchInterpolation:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
+        # Create the dialog (after translation) and keep reference
+        self.dlg = BatchInterpolationDialog()
 
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Batch Interpolation')
+        
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'BatchInterpolation')
         self.toolbar.setObjectName(u'BatchInterpolation')
+        
+        #connect signals and slots
+        self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
+        self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -134,7 +141,7 @@ class BatchInterpolation:
         """
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = BatchInterpolationDialog()
+        #self.dlg = BatchInterpolationDialog()
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -192,3 +199,32 @@ class BatchInterpolation:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
+    #own code starts here
+    def start_interpolation(self):
+        """test"""
+    
+    def choose_output_directory(self):
+        """Opens a file dialog to choose a directory for storing the output of this plugin."""
+        s = QSettings()
+        dialog = QFileDialog(self)
+        dialog.setFileMode(QtGui.QFileDialog.Directory)
+        dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+        filename = dialog.getSaveFileName(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), '*')
+        self.dlg.lineEdit_output.setText(filename)
+        s.setValue("qgis_batch-interpolation_output", filename)
+    
+    def insert_layers_into_combobox(self):
+        """test"""
+    
+    def insert_attributes_into_table(aelf):
+        """test"""
+        
+    def enable_contour_lines(self):
+        """Enabling and disabling of GUI elements depending on the status of a checkbox."""
+        if self.dlg.checkBox_contourLines.isChecked():
+            self.dlg.label_contourLines.setEnabled(True)
+            self.dlg.doubleSpinBox_contourLines.setEnabled(True)
+        else:
+            self.dlg.label_contourLines.setEnabled(False)
+            self.dlg.doubleSpinBox_contourLines.setEnabled(False)
