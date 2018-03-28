@@ -1,4 +1,4 @@
-import interpolation
+from interpolation import Interpolation
 import glob
 from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem
 from os import path
@@ -11,19 +11,19 @@ class Controller():
     
     def populate_layer_list(self, iface, combobox):
         #populate the instance variable
-        self.layers = []
+        self.layers = [""]
         self.layers = iface.legendInterface().layers()
         
         #populate the combobox
-        for layer in layers:
-            combobox.addItem(layer)
+        for layer in self.layers:
+            combobox.addItem(layer.name())
     
     def populate_attribute_list(self, layername, table):
         #clear the table
         table.clearSpans()
         
         #find the selected layer
-        for layer in layers:
+        for layer in self.layers:
             if layer.name() == layername:
                 #get all fields/attributes of the selected layer
                 fields = layer.pendingFields()

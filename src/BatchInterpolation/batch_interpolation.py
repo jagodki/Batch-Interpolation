@@ -21,13 +21,13 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
 from batch_interpolation_dialog import BatchInterpolationDialog
 import os.path
-from processing import controller
+from processing.controller import Controller
 
 
 class BatchInterpolation:
@@ -65,6 +65,7 @@ class BatchInterpolation:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Batch Interpolation')
+        self.controller = Controller()
         
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'BatchInterpolation')
@@ -190,6 +191,9 @@ class BatchInterpolation:
 
     def run(self):
         """Run method that performs all the real work"""
+        #populate the combobox with all layers
+        self.insert_layers_into_combobox()
+        
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
@@ -207,15 +211,17 @@ class BatchInterpolation:
     def choose_output_directory(self):
         """Opens a file dialog to choose a directory for storing the output of this plugin."""
         s = QSettings()
-        dialog = QFileDialog(self)
-        dialog.setFileMode(QtGui.QFileDialog.Directory)
-        dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
-        filename = dialog.getSaveFileName(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), '*')
+        #dialog = QFileDialog()
+        #dialog.setFileMode(QFileDialog.Directory)
+        #dialog.setOption(QFileDialog.ShowDirsOnly, True)
+        #filename = dialog.getSaveFileName(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), '*')
+        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", QFileDialog.ShowDirsOnly))
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
     
     def insert_layers_into_combobox(self):
-        """test"""
+        """populate the layer-combobox during start of the plugin."""
+        self.controller.populate_layer_list(self.iface, self.dlg.comboBox_layers)
     
     def insert_attributes_into_table(aelf):
         """test"""
