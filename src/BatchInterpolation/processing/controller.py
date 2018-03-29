@@ -1,6 +1,7 @@
 from interpolation import Interpolation
 import glob
 from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem
+from PyQt4.QtCore import Qt
 from os import path
 
 class Controller():
@@ -11,10 +12,11 @@ class Controller():
     
     def populate_layer_list(self, iface, combobox):
         #populate the instance variable
-        self.layers = [""]
+        self.layers = []
         self.layers = iface.legendInterface().layers()
         
         #populate the combobox
+        combobox.addItem(" ")
         for layer in self.layers:
             combobox.addItem(layer.name())
     
@@ -31,10 +33,18 @@ class Controller():
                 
                 #populate the table
                 for fieldname in fieldnames:
-                    current_row = self.table.rowCount()
+                    current_row = table.rowCount()
                     table.insertRow(current_row)
                     table.setRowCount(current_row + 1)
-                    table.setItem(current_row, 0, QTableWidgetItem(fieldname))
+                    
+                    #insert name of the attribute
+                    table.setItem(current_row, 1, QTableWidgetItem(fieldname))
+                
+                    #insert the chechbox
+                    checkbox_item = QTableWidgetItem()
+                    checkbox_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                    checkbox_item.setCheckState(Qt.Unchecked)
+                    table.setItem(current_row, 0, QTableWidgetItem(checkbox_item))
                 
                 break
     

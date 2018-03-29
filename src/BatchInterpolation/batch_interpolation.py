@@ -67,6 +67,13 @@ class BatchInterpolation:
         self.menu = self.tr(u'&Batch Interpolation')
         self.controller = Controller()
         
+        #clean up all widgets
+        self.dlg.comboBox_layers.clear()
+        self.dlg.lineEdit_output.setText("")
+        self.dlg.spinBox_pixelSize.setValue(0)
+        self.dlg.doubleSpinBox_contourLines.setValue(0.0)
+        self.dlg.checkBox_contourLines.setEnabled(False)
+        
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'BatchInterpolation')
         self.toolbar.setObjectName(u'BatchInterpolation')
@@ -74,6 +81,7 @@ class BatchInterpolation:
         #connect signals and slots
         self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
+        self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -215,16 +223,17 @@ class BatchInterpolation:
         #dialog.setFileMode(QFileDialog.Directory)
         #dialog.setOption(QFileDialog.ShowDirsOnly, True)
         #filename = dialog.getSaveFileName(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), '*')
-        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", QFileDialog.ShowDirsOnly))
+        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), QFileDialog.ShowDirsOnly)
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
     
     def insert_layers_into_combobox(self):
-        """populate the layer-combobox during start of the plugin."""
+        """Populate the layer-combobox during start of the plugin."""
         self.controller.populate_layer_list(self.iface, self.dlg.comboBox_layers)
     
-    def insert_attributes_into_table(aelf):
-        """test"""
+    def insert_attributes_into_table(self):
+        """Populate the table with the attributes of the selected layer."""
+        self.controller.populate_attribute_list(self.dlg.comboBox_layers.currentText(), self.dlg.tableWidget_attributes)
         
     def enable_contour_lines(self):
         """Enabling and disabling of GUI elements depending on the status of a checkbox."""
