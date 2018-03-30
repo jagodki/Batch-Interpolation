@@ -16,7 +16,7 @@ class Controller():
         self.layers = iface.legendInterface().layers()
         
         #populate the combobox
-        combobox.addItem(" ")
+        #combobox.addItem(" ")
         for layer in self.layers:
             combobox.addItem(layer.name())
     

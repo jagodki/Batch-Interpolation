@@ -67,13 +67,6 @@ class BatchInterpolation:
         self.menu = self.tr(u'&Batch Interpolation')
         self.controller = Controller()
         
-        #clean up all widgets
-        self.dlg.comboBox_layers.clear()
-        self.dlg.lineEdit_output.setText("")
-        self.dlg.spinBox_pixelSize.setValue(0)
-        self.dlg.doubleSpinBox_contourLines.setValue(0.0)
-        self.dlg.checkBox_contourLines.setEnabled(False)
-        
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'BatchInterpolation')
         self.toolbar.setObjectName(u'BatchInterpolation')
@@ -199,6 +192,14 @@ class BatchInterpolation:
 
     def run(self):
         """Run method that performs all the real work"""
+        #clean up all widgets
+        self.dlg.comboBox_layers.clear()
+        self.dlg.tableWidget_attributes.setRowCount(0)
+        self.dlg.lineEdit_output.setText("")
+        self.dlg.spinBox_pixelSize.setValue(0)
+        self.dlg.doubleSpinBox_contourLines.setValue(0.0)
+        self.dlg.checkBox_contourLines.setChecked(False)
+        
         #populate the combobox with all layers
         self.insert_layers_into_combobox()
         
@@ -218,12 +219,12 @@ class BatchInterpolation:
     
     def choose_output_directory(self):
         """Opens a file dialog to choose a directory for storing the output of this plugin."""
+        #load settings
         s = QSettings()
-        #dialog = QFileDialog()
-        #dialog.setFileMode(QFileDialog.Directory)
-        #dialog.setOption(QFileDialog.ShowDirsOnly, True)
-        #filename = dialog.getSaveFileName(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), '*')
-        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", s.value("qgis_batch-interpolation_output", ""), QFileDialog.ShowDirsOnly)
+        output_from_settings = str(s.value("qgis_batch-interpolation_output", ""))
+        
+        #open file dialog and store the selected path in the settings
+        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", output_from_settings, QFileDialog.ShowDirsOnly)
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
     
@@ -233,6 +234,7 @@ class BatchInterpolation:
     
     def insert_attributes_into_table(self):
         """Populate the table with the attributes of the selected layer."""
+        self.dlg.tableWidget_attributes.setRowCount(0)
         self.controller.populate_attribute_list(self.dlg.comboBox_layers.currentText(), self.dlg.tableWidget_attributes)
         
     def enable_contour_lines(self):
