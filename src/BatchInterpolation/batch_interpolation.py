@@ -25,6 +25,8 @@ from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
+from qgis.gui import QgsMessageBar
+from qgis.core import QgsMessageLog
 from batch_interpolation_dialog import BatchInterpolationDialog
 import os.path
 from processing.controller import Controller
@@ -75,6 +77,7 @@ class BatchInterpolation:
         self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
         self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
+        self.dlg.pushButton_start.clicked.connect(self.start_interpolation)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -215,7 +218,28 @@ class BatchInterpolation:
 
     #own code starts here
     def start_interpolation(self):
-        """test"""
+        """Start the interpolation."""
+        #evaluate the group of radio buttons
+        interpolation_method = ""
+        if self.dlg.radioButton_idw.isChecked():
+            interpolation_method = "IDW"
+        else:
+            interpolation_method = "TIN"
+        
+        #call the start-method
+        try:
+            self.controller.start_batch_process(self.dlg.tableWidget_attributes,
+                                                self.dlg.comboBox_layers.currentText(),
+                                                interpolation_method,
+                                                self.dlg.checkBox_contourLines.isChecked(),
+                                                self.dlg.lineEdit_output.text(),
+                                                self.dlg.spinBox_pixelSize.Value(),
+                                                str(self.dlg.doubleSpinBox_contourLines.Value()),
+                                                self.dlg.progressBar)
+        except:
+            e = sys.exc_info()[0]
+            self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log for the stack trace.", level=QgsMessageBar.CRITICAL)
+            QgsMessageLog.logMessage(traceback.print_exc(), level=QgsMessageLog.CRITICAL)
     
     def choose_output_directory(self):
         """Opens a file dialog to choose a directory for storing the output of this plugin."""

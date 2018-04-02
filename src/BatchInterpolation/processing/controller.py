@@ -48,7 +48,7 @@ class Controller():
                 
                 break
     
-    def start_batch_process(self, table, layer, attribute, interpolation_method, contour, out_dir, resolution, intervall, pb):
+    def start_batch_process(self, table, layer, interpolation_method, contour, out_dir, resolution, intervall, pb):
         #init the progressbar
         pb.setValue(0)
         if contour:
@@ -57,6 +57,7 @@ class Controller():
             pb.setMaximum(len(table.selectionModel().selectedRows()))
         
         #iterate over the selected rows
+        #iterate over all rows and detect the checked rows
         for row in table.selectionModel().selectedRows():
             #get the index of the attribute
             attr_index = 0
