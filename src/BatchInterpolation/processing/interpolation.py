@@ -1,5 +1,5 @@
 import qgis.core
-import qgis.analysis
+from qgis.analysis import QgsInterpolator, QgsTINInterpolator, QgsIDWInterpolator, QgsGridFileWriter
 from PyQt4.QtCore import QDir
 import os
 

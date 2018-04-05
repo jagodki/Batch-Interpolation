@@ -48,7 +48,7 @@ class Controller():
                 
                 break
     
-    def start_batch_process(self, table, layer, interpolation_method, contour, out_dir, resolution, intervall, pb):
+    def start_batch_process(self, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb):
         #init the progressbar
         pb.setValue(0)
         if contour:
@@ -56,19 +56,29 @@ class Controller():
         else:
             pb.setMaximum(len(table.selectionModel().selectedRows()))
         
-        #iterate over the selected rows
+        #get the layer with the specified name
+        layer = None
+        for layers_entry in self.layers:
+            if layers_entry.name() == layer_name:
+                layer = layers_entry
+                break
+        
         #iterate over all rows and detect the checked rows
-        for row in table.selectionModel().selectedRows():
-            #get the index of the attribute
-            attr_index = 0
-            for field in layer.pendingFields():
-                if field == attribute:
-                    break
+        for row in xrange(0, table.rowCount()):
+            if table.item(row, 0).checkState() == Qt.Checked:
+                attribute = table.item(row, 1).text()
+                
+                #get the index of the attribute
+                attr_index = 0
+                for field in layer.pendingFields():
+                    if field == attribute:
+                        break
+                    attr_index += 1
                 attr_index += 1
             
-            #interpolate the layer with the current attribute
-            self.interpolation.interpolation(layer, attr_index, attribute, interpolation_method, out_dir, resolution)
-            pb.setValue(pb.getValue() + 1)
+                #interpolate the layer with the current attribute
+                self.interpolation.interpolation(layer, attr_index, attribute, interpolation_method, out_dir, resolution)
+                pb.setValue(pb.getValue() + 1)
         
         #create contour lines
         if contour:

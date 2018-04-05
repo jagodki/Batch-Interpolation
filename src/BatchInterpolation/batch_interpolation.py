@@ -29,6 +29,7 @@ from qgis.gui import QgsMessageBar
 from qgis.core import QgsMessageLog
 from batch_interpolation_dialog import BatchInterpolationDialog
 import os.path
+import sys, traceback, time
 from processing.controller import Controller
 
 
@@ -226,6 +227,14 @@ class BatchInterpolation:
         else:
             interpolation_method = "TIN"
         
+        #check whether an output path is inserted
+        if str(self.dlg.lineEdit_output.text).strip() == "":
+            self.iface.messageBar().pushMessage("Info", "No directory choosed for storing the output.", level=QgsMessageBar.INFO, duration=10)
+            return True
+        
+        #check whether the pixel size is unequal 0
+        
+        
         #call the start-method
         try:
             self.controller.start_batch_process(self.dlg.tableWidget_attributes,
@@ -233,11 +242,10 @@ class BatchInterpolation:
                                                 interpolation_method,
                                                 self.dlg.checkBox_contourLines.isChecked(),
                                                 self.dlg.lineEdit_output.text(),
-                                                self.dlg.spinBox_pixelSize.Value(),
-                                                str(self.dlg.doubleSpinBox_contourLines.Value()),
+                                                self.dlg.spinBox_pixelSize.value(),
+                                                str(self.dlg.doubleSpinBox_contourLines.value()),
                                                 self.dlg.progressBar)
         except:
-            e = sys.exc_info()[0]
             self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log for the stack trace.", level=QgsMessageBar.CRITICAL)
             QgsMessageLog.logMessage(traceback.print_exc(), level=QgsMessageLog.CRITICAL)
     
