@@ -224,16 +224,21 @@ class BatchInterpolation:
         interpolation_method = ""
         if self.dlg.radioButton_idw.isChecked():
             interpolation_method = "IDW"
-        else:
+        elif self.dlg.radioButton_tin.isChecked():
             interpolation_method = "TIN"
+        if interpolation_method == "":
+            self.iface.messageBar().pushMessage("Info", "Please choose an interpolation method.", level=QgsMessageBar.INFO, duration=10)
+            return True
         
         #check whether an output path is inserted
-        if str(self.dlg.lineEdit_output.text).strip() == "":
+        if self.dlg.lineEdit_output.text() == "":
             self.iface.messageBar().pushMessage("Info", "No directory choosed for storing the output.", level=QgsMessageBar.INFO, duration=10)
             return True
         
         #check whether the pixel size is unequal 0
-        
+        if self.dlg.spinBox_pixelSize.value() == 0:
+            self.iface.messageBar().pushMessage("Info", "The pixel size of the resulting raster layer has to be unequal 0.", level=QgsMessageBar.INFO, duration=10)
+            return True
         
         #call the start-method
         try:

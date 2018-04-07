@@ -18,6 +18,7 @@ class Interpolation():
         #use the given attribute instead of the z coordinate for interpolation
         layer_data.zCoordInterpolation=False
         layer_data.interpolationAttribute = attribute_for_interpolation
+        print(attribute_for_interpolation)
         layer_data.mInputType = 1
         
         #interpolate the layer
@@ -28,17 +29,27 @@ class Interpolation():
             interpolator = QgsIDWInterpolator([layer_data])
         
         #create the resulting raster
-        export_path = QDir.toNativeSeparators(output_dir + "/batch_interpolation/" + layer.name() + "_" + attribute_name + ".asc")
         rect = layer.extent()
         ncol = int((rect.xMaximum() - rect.xMinimum()) / resolution)
         nrows = int((rect.yMaximum() - rect.yMinimum()) / resolution)
         
+        #create outut directory
+        export_folder = QDir.toNativeSeparators(output_dir + "/batch_interpolation/")
+        if not os.path.exists(export_folder):
+            os.makedirs(export_folder)
+        
         #write raster to file system
-        output = QgsGridFileWriter(interpolator, export_path, rect, ncol, nrows, res, res)
+        export_path = QDir.toNativeSeparators(export_folder + layer.name() + "_" + attribute_name + ".asc")
+        output = QgsGridFileWriter(interpolator, export_path, rect, ncol, nrows, resolution, resolution)
         output.writeFile(True)
     
     def contour(self, filename, attr_name, intervall, input, output):
-        export_path = QDir.toNativeSeparators(output_dir + "/batch_contour/" + filename + ".shp")
+        #create output directoy
+        export_folder = QDir.toNativeSeparators(output_dir + "/batch_contour/")
+        if not os.path.exists(export_folder):
+            os.makedirs(export_folder)
+        
+        export_path = QDir.toNativeSeparators(export_folder + filename + ".shp")
         command = "gdal_contour -a " + attr_name + " -i " + intervall + " " + input + " " + output
         os.system(command)
     

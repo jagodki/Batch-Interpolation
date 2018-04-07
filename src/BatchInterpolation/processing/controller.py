@@ -71,17 +71,17 @@ class Controller():
                 #get the index of the attribute
                 attr_index = 0
                 for field in layer.pendingFields():
-                    if field == attribute:
+                    if field.name() == attribute:
                         break
                     attr_index += 1
                 attr_index += 1
             
                 #interpolate the layer with the current attribute
                 self.interpolation.interpolation(layer, attr_index, attribute, interpolation_method, out_dir, resolution)
-                pb.setValue(pb.getValue() + 1)
+                pb.setValue(pb.value() + 1)
         
         #create contour lines
         if contour:
             for file in glob.glob(QDir.toNativeSeparators(out_dir + "/batch_interpolation/*.asc")):
                 self.interpolation.contour(path.basename(file), attribute, intervall, file, out_dir)
-                pb.setValue(pb.getValue() + 1)
+                pb.setValue(pb.value() + 1)
