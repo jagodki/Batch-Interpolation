@@ -74,7 +74,6 @@ class Controller():
                     if field.name() == attribute:
                         break
                     attr_index += 1
-                attr_index += 1
             
                 #interpolate the layer with the current attribute
                 self.interpolation.interpolation(layer, attr_index, attribute, interpolation_method, out_dir, resolution)

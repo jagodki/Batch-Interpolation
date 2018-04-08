@@ -18,7 +18,6 @@ class Interpolation():
         #use the given attribute instead of the z coordinate for interpolation
         layer_data.zCoordInterpolation=False
         layer_data.interpolationAttribute = attribute_for_interpolation
-        print(attribute_for_interpolation)
         layer_data.mInputType = 1
         
         #interpolate the layer

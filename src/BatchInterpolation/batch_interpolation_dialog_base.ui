@@ -18,7 +18,7 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>674</width>
+     <width>675</width>
      <height>360</height>
     </rect>
    </property>
@@ -188,7 +188,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox_pixelSize"/>
+              <widget class="QSpinBox" name="spinBox_pixelSize">
+               <property name="maximum">
+                <number>1000000000</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -219,6 +223,9 @@
               <widget class="QDoubleSpinBox" name="doubleSpinBox_contourLines">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>10000000000000.000000000000000</double>
                </property>
               </widget>
              </item>
