@@ -2,6 +2,7 @@ import qgis.core
 from qgis.analysis import QgsInterpolator, QgsTINInterpolator, QgsIDWInterpolator, QgsGridFileWriter
 from PyQt4.QtCore import QDir
 import os
+import subprocess
 
 class Interpolation():
     
@@ -44,11 +45,11 @@ class Interpolation():
     
     def contour(self, filename, attr_name, intervall, input, output):
         #create output directoy
-        export_folder = QDir.toNativeSeparators(output_dir + "/batch_contour/")
+        export_folder = QDir.toNativeSeparators(output + "/batch_contour/")
         if not os.path.exists(export_folder):
             os.makedirs(export_folder)
         
-        export_path = QDir.toNativeSeparators(export_folder + filename + ".shp")
-        command = "gdal_contour -a " + attr_name + " -i " + intervall + " " + input + " " + output
-        os.system(command)
+        export_path = QDir.toNativeSeparators(export_folder + filename + ".geojson")
+        command = ["gdal_contour", "-a", attr_name, "-i", intervall, "-f", "GeoJSON", input, export_path]
+        subprocess.call(command, shell=True)
     

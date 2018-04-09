@@ -1,8 +1,8 @@
 from interpolation import Interpolation
 import glob
 from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem
-from PyQt4.QtCore import Qt
-from os import path
+from PyQt4.QtCore import Qt, QDir
+import os
 
 class Controller():
     
@@ -45,7 +45,6 @@ class Controller():
                     checkbox_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
                     checkbox_item.setCheckState(Qt.Unchecked)
                     table.setItem(current_row, 0, QTableWidgetItem(checkbox_item))
-                
                 break
     
     def start_batch_process(self, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb):
@@ -82,5 +81,5 @@ class Controller():
         #create contour lines
         if contour:
             for file in glob.glob(QDir.toNativeSeparators(out_dir + "/batch_interpolation/*.asc")):
-                self.interpolation.contour(path.basename(file), attribute, intervall, file, out_dir)
+                self.interpolation.contour(os.path.splitext(os.path.basename(file))[0], attribute, intervall, file, out_dir)
                 pb.setValue(pb.value() + 1)
