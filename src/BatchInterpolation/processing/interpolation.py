@@ -43,13 +43,13 @@ class Interpolation():
         output = QgsGridFileWriter(interpolator, export_path, rect, ncol, nrows, resolution, resolution)
         output.writeFile(True)
     
-    def contour(self, filename, attr_name, intervall, input, output):
+    def contour(self, gdal_contour_dir, filename, attr_name, intervall, input, output):
         #create output directoy
         export_folder = QDir.toNativeSeparators(output + "/batch_contour/")
         if not os.path.exists(export_folder):
             os.makedirs(export_folder)
         
         export_path = QDir.toNativeSeparators(export_folder + filename + ".geojson")
-        command = ["gdal_contour", "-a", attr_name, "-i", intervall, "-f", "GeoJSON", input, export_path]
-        subprocess.call(command, shell=True)
+        command = [gdal_contour_dir, "-a", attr_name, "-i", str(intervall), "-f", "GeoJSON", input, export_path]
+        subprocess.call(command)
     

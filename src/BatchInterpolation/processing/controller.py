@@ -1,6 +1,6 @@
 from interpolation import Interpolation
 import glob
-from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem
+from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem, QApplication
 from PyQt4.QtCore import Qt, QDir
 import os
 
@@ -16,7 +16,6 @@ class Controller():
         self.layers = iface.legendInterface().layers()
         
         #populate the combobox
-        #combobox.addItem(" ")
         for layer in self.layers:
             combobox.addItem(layer.name())
     
@@ -47,13 +46,20 @@ class Controller():
                     table.setItem(current_row, 0, QTableWidgetItem(checkbox_item))
                 break
     
-    def start_batch_process(self, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb):
+    def start_batch_process(self, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb, gdal_contour_dir):
         #init the progressbar
         pb.setValue(0)
+        max = 0
+        
+        for row in xrange(0, table.rowCount()):
+            if table.item(row, 0).checkState() == Qt.Checked:
+                max += 1
+    
         if contour:
-            pb.setMaximum(2 * len(table.selectionModel().selectedRows()))
+            pb.setMaximum(2 * max)
         else:
-            pb.setMaximum(len(table.selectionModel().selectedRows()))
+            pb.setMaximum(max)
+        QApplication.processEvents()
         
         #get the layer with the specified name
         layer = None
@@ -77,9 +83,11 @@ class Controller():
                 #interpolate the layer with the current attribute
                 self.interpolation.interpolation(layer, attr_index, attribute, interpolation_method, out_dir, resolution)
                 pb.setValue(pb.value() + 1)
+                QApplication.processEvents()
         
         #create contour lines
         if contour:
             for file in glob.glob(QDir.toNativeSeparators(out_dir + "/batch_interpolation/*.asc")):
-                self.interpolation.contour(os.path.splitext(os.path.basename(file))[0], attribute, intervall, file, out_dir)
+                self.interpolation.contour(gdal_contour_dir, os.path.splitext(os.path.basename(file))[0], "distance", intervall, file, out_dir)
                 pb.setValue(pb.value() + 1)
+                QApplication.processEvents() 

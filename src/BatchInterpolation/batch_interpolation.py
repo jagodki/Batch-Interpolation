@@ -77,6 +77,7 @@ class BatchInterpolation:
         #connect signals and slots
         self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
+        self.dlg.pushButton_gdal_contour.clicked.connect(self.choose_gdal_contour_directory)
         self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
         self.dlg.pushButton_start.clicked.connect(self.start_interpolation)
 
@@ -200,6 +201,7 @@ class BatchInterpolation:
         self.dlg.comboBox_layers.clear()
         self.dlg.tableWidget_attributes.setRowCount(0)
         self.dlg.lineEdit_output.setText("")
+        self.dlg.lineEdit_gdal_contour.setText(QSettings().value("qgis_batch-interpolation_gdal_contour", ""))
         self.dlg.spinBox_pixelSize.setValue(0)
         self.dlg.doubleSpinBox_contourLines.setValue(0.0)
         self.dlg.checkBox_contourLines.setChecked(False)
@@ -220,6 +222,11 @@ class BatchInterpolation:
     #own code starts here
     def start_interpolation(self):
         """Start the interpolation."""
+        #store infomration in the settings
+        s = QSettings()
+        s.setValue("qgis_batch-interpolation_output", self.dlg.lineEdit_output.text())
+        s.setValue("qgis_batch-interpolation_gdal_contour", self.dlg.lineEdit_gdal_contour.text())
+        
         #evaluate the group of radio buttons
         interpolation_method = ""
         if self.dlg.radioButton_idw.isChecked():
@@ -240,6 +247,16 @@ class BatchInterpolation:
             self.iface.messageBar().pushMessage("Info", "The pixel size of the resulting raster layer has to be unequal 0.", level=QgsMessageBar.INFO, duration=10)
             return True
         
+        #check that the path to gdal_contur is not empty
+        if self.dlg.lineEdit_gdal_contour.text() == "" and self.dlg.checkBox_contourLines.isChecked():
+            self.iface.messageBar().pushMessage("Info", "Please insert the path to gdal_contour.", level=QgsMessageBar.INFO, duration=10)
+            return True
+        
+        #check whether the distance between contour lines is unequal 0
+        if self.dlg.doubleSpinBox_contourLines.value() == 0.0 and self.dlg.checkBox_contourLines.isChecked():
+            self.iface.messageBar().pushMessage("Info", "The distance between contour lines has to be unequal 0.", level=QgsMessageBar.INFO, duration=10)
+            return True
+        
         #call the start-method
         try:
             self.controller.start_batch_process(self.dlg.tableWidget_attributes,
@@ -249,9 +266,10 @@ class BatchInterpolation:
                                                 self.dlg.lineEdit_output.text(),
                                                 self.dlg.spinBox_pixelSize.value(),
                                                 str(self.dlg.doubleSpinBox_contourLines.value()),
-                                                self.dlg.progressBar)
+                                                self.dlg.progressBar,
+                                                self.dlg.lineEdit_gdal_contour.text())
         except:
-            self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log for the stack trace.", level=QgsMessageBar.CRITICAL)
+            self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log and/or the python-window for the stack trace.", level=QgsMessageBar.CRITICAL)
             QgsMessageLog.logMessage(traceback.print_exc(), level=QgsMessageLog.CRITICAL)
     
     def choose_output_directory(self):
@@ -264,6 +282,17 @@ class BatchInterpolation:
         filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", output_from_settings, QFileDialog.ShowDirsOnly)
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
+    
+    def choose_gdal_contour_directory(self):
+        """Opens a file dialog to choose the absolute path of gdal_contour."""
+        #load settings
+        s = QSettings()
+        gdal_contour_from_settings = str(s.value("qgis_batch-interpolation_gdal_contour", ""))
+        
+        #open file dialog and store the selected path in the settings
+        filename = QFileDialog.getOpenFileName(self.dlg, "Select gdal_contour", gdal_contour_from_settings, "*")
+        self.dlg.lineEdit_gdal_contour.setText(filename)
+        s.setValue("qgis_batch-interpolation_gdal_contour", filename)
     
     def insert_layers_into_combobox(self):
         """Populate the layer-combobox during start of the plugin."""
@@ -279,6 +308,12 @@ class BatchInterpolation:
         if self.dlg.checkBox_contourLines.isChecked():
             self.dlg.label_contourLines.setEnabled(True)
             self.dlg.doubleSpinBox_contourLines.setEnabled(True)
+            self.dlg.label_gdal_contour.setEnabled(True)
+            self.dlg.lineEdit_gdal_contour.setEnabled(True)
+            self.dlg.pushButton_gdal_contour.setEnabled(True)
         else:
             self.dlg.label_contourLines.setEnabled(False)
             self.dlg.doubleSpinBox_contourLines.setEnabled(False)
+            self.dlg.label_gdal_contour.setEnabled(False)
+            self.dlg.lineEdit_gdal_contour.setEnabled(False)
+            self.dlg.pushButton_gdal_contour.setEnabled(False)
