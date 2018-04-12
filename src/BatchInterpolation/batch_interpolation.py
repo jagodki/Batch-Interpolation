@@ -205,6 +205,11 @@ class BatchInterpolation:
         self.dlg.spinBox_pixelSize.setValue(0)
         self.dlg.doubleSpinBox_contourLines.setValue(0.0)
         self.dlg.checkBox_contourLines.setChecked(False)
+        self.dlg.label_contourLines.setEnabled(False)
+        self.dlg.lineEdit_gdal_contour.setEnabled(False)
+        self.dlg.pushButton_gdal_contour.setEnabled(False)
+        self.dlg.label_gdal_contour.setEnabled(False)
+        self.dlg.doubleSpinBox_contourLines.setEnabled(False)
         
         #populate the combobox with all layers
         self.insert_layers_into_combobox()
