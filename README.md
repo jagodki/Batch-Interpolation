@@ -10,7 +10,7 @@ Imagine you have a point layer with different attributes and you want to create 
 ## Usage
 The following screenshot shows the user interface of the plugin. The graphic elements are nummerized and described below.
 <br>
-<img src="screenshots/usage_plugin_100" />
+<img src="screenshots/usage_plugin_100.png" />
 <br>
 1. This combobox contains all layers of the current QGIS-project. Please note, that just vector layers of the geometry type POINT can be used for the interpolation without unexpacted results and problems (see the chapter <i>Hints</i> below).
 2. This table shows all attributes of the selected layer in 1. If an attribute should be used for interpolation, check the checkbox in the same row. All unchecked attributes will be ignored.
