@@ -9,7 +9,7 @@
 [general]
 name=Batch Interpolation
 qgisMinimumVersion=2.0
-description=create a batch process for the QGIS Raster Interpolation (TIN or IDW) and gdal_contour
+description=A QGIS-plugin, which creates a batch process of the QGIS Raster Interpolation (TIN or IDW) and gdal_contour.
 version=1.0.0
 author=Christoph Jung
 email=jagodki.cj@gmail.com
