@@ -210,9 +210,17 @@ class BatchInterpolation:
         self.dlg.pushButton_gdal_contour.setEnabled(False)
         self.dlg.label_gdal_contour.setEnabled(False)
         self.dlg.doubleSpinBox_contourLines.setEnabled(False)
+        self.dlg.checkBox_clip_raster.setChecked(False)
+        self.dlg.label_gdalwarp.setEnabled(False)
+        self.dlg.lineEdit_gdalwarp.setEnabled(False)
+        self.dlg.lineEdit_gdalwarp.setText(QSettings().value("qgis_batch-interpolation_gdalwarp", ""))
+        self.dlg.pushButton_gdalwarp.setEnabled(False)
+        self.dlg.checkBox_ignore_null_values.setChecked(False)
+        self.dlg.label_mask_layer.setEnabled(False)
+        self.dlg.comboBox_mask_layer.setEnabled(False)
         
         #populate the combobox with all layers
-        self.insert_layers_into_combobox()
+        self.insert_layers_into_combobox(self.dlg.comboBox_layers)
         
         # show the dialog
         self.dlg.show()
@@ -288,6 +296,17 @@ class BatchInterpolation:
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
     
+    def choose_gdalwarp_directory(self):
+        """Opens a file dialog to choose the absolute path to gdalwarp."""
+        #load settings
+        s = QSettings()
+        gdalwarp_from_settings = str(s.value("qgis_batch-interpolation_gdalwarp", ""))
+        
+        #open file dialog and store the selected path in the settings
+        filename = QFileDialog.getOpenFileName(self.dlg, "Select gdal_contour", gdalwarp_from_settings, "*")
+        self.dlg.lineEdit_gdalwarp.setText(filename)
+        s.setValue("qgis_batch-interpolation_gdalwarp", filename)
+    
     def choose_gdal_contour_directory(self):
         """Opens a file dialog to choose the absolute path of gdal_contour."""
         #load settings
@@ -299,15 +318,31 @@ class BatchInterpolation:
         self.dlg.lineEdit_gdal_contour.setText(filename)
         s.setValue("qgis_batch-interpolation_gdal_contour", filename)
     
-    def insert_layers_into_combobox(self):
+    def insert_layers_into_combobox(self, combobox):
         """Populate the layer-combobox during start of the plugin."""
-        self.controller.populate_layer_list(self.iface, self.dlg.comboBox_layers)
+        self.controller.populate_layer_list(self.iface, combobox)
     
     def insert_attributes_into_table(self):
         """Populate the table with the attributes of the selected layer."""
         self.dlg.tableWidget_attributes.setRowCount(0)
         self.controller.populate_attribute_list(self.dlg.comboBox_layers.currentText(), self.dlg.tableWidget_attributes)
-        
+
+    def enable_raster_clip(self):
+        """Enabling and disabling of GUI elements depending on the status of a checkbox."""
+        if self.dlg.checkBox_clip_raster.isChecked():
+            self.dlg.label_gdalwarp.setEnabled(True)
+            self.dlg.lineEdit_gdalwarp.setEnabled(True)
+            self.dlg.pushButton_gdalwarp.setEnabled(True)
+            self.dlg.label_mask_layer.setEnabled(True)
+            self.dlg.comboBox_mask_layer.setEnabled(True)
+            self.insert_layers_into_combobox(self.dlg.comboBox_mask_layer)
+        else:
+            self.dlg.label_gdalwarp.setEnabled(False)
+            self.dlg.lineEdit_gdalwarp.setEnabled(False)
+            self.dlg.pushButton_gdalwarp.setEnabled(False)
+            self.dlg.label_mask_layer.setEnabled(False)
+            self.dlg.comboBox_mask_layer.setEnabled(False)
+
     def enable_contour_lines(self):
         """Enabling and disabling of GUI elements depending on the status of a checkbox."""
         if self.dlg.checkBox_contourLines.isChecked():
@@ -322,3 +357,4 @@ class BatchInterpolation:
             self.dlg.label_gdal_contour.setEnabled(False)
             self.dlg.lineEdit_gdal_contour.setEnabled(False)
             self.dlg.pushButton_gdal_contour.setEnabled(False)
+    
