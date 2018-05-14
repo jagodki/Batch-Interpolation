@@ -76,8 +76,10 @@ class BatchInterpolation:
         
         #connect signals and slots
         self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
+        self.dlg.checkBox_clip_raster.clicked.connect(self.enable_raster_clip)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
         self.dlg.pushButton_gdal_contour.clicked.connect(self.choose_gdal_contour_directory)
+        self.dlg.pushButton_gdalwarp.clicked.connect(self.choose_gdalwarp_directory)
         self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
         self.dlg.pushButton_start.clicked.connect(self.start_interpolation)
 
@@ -201,7 +203,7 @@ class BatchInterpolation:
         self.dlg.comboBox_layers.clear()
         self.dlg.tableWidget_attributes.setRowCount(0)
         self.dlg.lineEdit_output.setText("")
-        self.dlg.lineEdit_gdal_contour.setText(QSettings().value("qgis_batch-interpolation_gdal_contour", ""))
+        self.dlg.lineEdit_gdal_contour.setText(str(QSettings().value("qgis_batch-interpolation_gdal_contour", "")))
         self.dlg.spinBox_pixelSize.setValue(0)
         self.dlg.doubleSpinBox_contourLines.setValue(0.0)
         self.dlg.checkBox_contourLines.setChecked(False)
@@ -213,7 +215,7 @@ class BatchInterpolation:
         self.dlg.checkBox_clip_raster.setChecked(False)
         self.dlg.label_gdalwarp.setEnabled(False)
         self.dlg.lineEdit_gdalwarp.setEnabled(False)
-        self.dlg.lineEdit_gdalwarp.setText(QSettings().value("qgis_batch-interpolation_gdalwarp", ""))
+        self.dlg.lineEdit_gdalwarp.setText(str(QSettings().value("qgis_batch-interpolation_gdalwarp", "")))
         self.dlg.pushButton_gdalwarp.setEnabled(False)
         self.dlg.checkBox_ignore_null_values.setChecked(False)
         self.dlg.label_mask_layer.setEnabled(False)
@@ -265,6 +267,11 @@ class BatchInterpolation:
             self.iface.messageBar().pushMessage("Info", "Please insert the path to gdal_contour.", level=QgsMessageBar.INFO, duration=10)
             return True
         
+        #check that the path to gdalwarp is not empty
+        if self.dlg.lineEdit_gdalwarp.text() == "" and self.dlg.checkBox_contourLines.isChecked():
+            self.iface.messageBar().pushMessage("Info", "Please insert the path to gdalwarp.", level=QgsMessageBar.INFO, duration=10)
+            return True
+        
         #check whether the distance between contour lines is unequal 0
         if self.dlg.doubleSpinBox_contourLines.value() == 0.0 and self.dlg.checkBox_contourLines.isChecked():
             self.iface.messageBar().pushMessage("Info", "The distance between contour lines has to be unequal 0.", level=QgsMessageBar.INFO, duration=10)
@@ -272,7 +279,8 @@ class BatchInterpolation:
         
         #call the start-method
         try:
-            self.controller.start_batch_process(self.dlg.tableWidget_attributes,
+            self.controller.start_batch_process(self.iface,
+                                                self.dlg.tableWidget_attributes,
                                                 self.dlg.comboBox_layers.currentText(),
                                                 interpolation_method,
                                                 self.dlg.checkBox_contourLines.isChecked(),
@@ -280,7 +288,10 @@ class BatchInterpolation:
                                                 self.dlg.spinBox_pixelSize.value(),
                                                 str(self.dlg.doubleSpinBox_contourLines.value()),
                                                 self.dlg.progressBar,
-                                                self.dlg.lineEdit_gdal_contour.text())
+                                                self.dlg.lineEdit_gdal_contour.text(),
+                                                self.dlg.checkBox_clip_raster.isChecked(),
+                                                self.dlg.lineEdit_gdalwarp.text(),
+                                                self.dlg.comboBox_mask_layer.currentText())
         except:
             self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log and/or the python-window for the stack trace.", level=QgsMessageBar.CRITICAL)
             QgsMessageLog.logMessage(traceback.print_exc(), level=QgsMessageLog.CRITICAL)
