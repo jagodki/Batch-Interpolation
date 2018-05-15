@@ -28,4 +28,4 @@ The following screenshot shows the user interface of the plugin. The graphic ele
 - The absolute path to gdal_contour has to be choosed just for the first time. The path will be stored in the Settings of your OS (using die QSettings library).
 - The plugin creates a new folder in the selected output-directory, where all raster images will be stored. The raster files have the name NameOfTheOriginalVectorLayer_NameOfTheInterpolationAttribute and the file type .ASC (ASCII-grid).
 - The contour lines will be stored in a new folder in the selected output directory (same level like the folder for the raster files).
-- Contour lines will be stored in GeoJSON-files, another file formats are not availlable at the moment (create an issue if other formats will be needed).
+- Contour lines will be stored in GeoJSON-files, other file formats are not availlable at the moment (create an issue if other formats will be needed).

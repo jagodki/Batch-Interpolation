@@ -79,7 +79,6 @@ class BatchInterpolation:
         self.dlg.checkBox_clip_raster.clicked.connect(self.enable_raster_clip)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
         self.dlg.pushButton_gdal_contour.clicked.connect(self.choose_gdal_contour_directory)
-        self.dlg.pushButton_gdalwarp.clicked.connect(self.choose_gdalwarp_directory)
         self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
         self.dlg.pushButton_start.clicked.connect(self.start_interpolation)
 
@@ -213,11 +212,6 @@ class BatchInterpolation:
         self.dlg.label_gdal_contour.setEnabled(False)
         self.dlg.doubleSpinBox_contourLines.setEnabled(False)
         self.dlg.checkBox_clip_raster.setChecked(False)
-        self.dlg.label_gdalwarp.setEnabled(False)
-        self.dlg.lineEdit_gdalwarp.setEnabled(False)
-        self.dlg.lineEdit_gdalwarp.setText(str(QSettings().value("qgis_batch-interpolation_gdalwarp", "")))
-        self.dlg.pushButton_gdalwarp.setEnabled(False)
-        self.dlg.checkBox_ignore_null_values.setChecked(False)
         self.dlg.label_mask_layer.setEnabled(False)
         self.dlg.comboBox_mask_layer.setEnabled(False)
         
@@ -267,11 +261,6 @@ class BatchInterpolation:
             self.iface.messageBar().pushMessage("Info", "Please insert the path to gdal_contour.", level=QgsMessageBar.INFO, duration=10)
             return True
         
-        #check that the path to gdalwarp is not empty
-        if self.dlg.lineEdit_gdalwarp.text() == "" and self.dlg.checkBox_contourLines.isChecked():
-            self.iface.messageBar().pushMessage("Info", "Please insert the path to gdalwarp.", level=QgsMessageBar.INFO, duration=10)
-            return True
-        
         #check whether the distance between contour lines is unequal 0
         if self.dlg.doubleSpinBox_contourLines.value() == 0.0 and self.dlg.checkBox_contourLines.isChecked():
             self.iface.messageBar().pushMessage("Info", "The distance between contour lines has to be unequal 0.", level=QgsMessageBar.INFO, duration=10)
@@ -290,7 +279,6 @@ class BatchInterpolation:
                                                 self.dlg.progressBar,
                                                 self.dlg.lineEdit_gdal_contour.text(),
                                                 self.dlg.checkBox_clip_raster.isChecked(),
-                                                self.dlg.lineEdit_gdalwarp.text(),
                                                 self.dlg.comboBox_mask_layer.currentText())
         except:
             self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log and/or the python-window for the stack trace.", level=QgsMessageBar.CRITICAL)
@@ -306,17 +294,6 @@ class BatchInterpolation:
         filename = QFileDialog.getExistingDirectory(self.dlg, "Select Output Directory", output_from_settings, QFileDialog.ShowDirsOnly)
         self.dlg.lineEdit_output.setText(filename)
         s.setValue("qgis_batch-interpolation_output", filename)
-    
-    def choose_gdalwarp_directory(self):
-        """Opens a file dialog to choose the absolute path to gdalwarp."""
-        #load settings
-        s = QSettings()
-        gdalwarp_from_settings = str(s.value("qgis_batch-interpolation_gdalwarp", ""))
-        
-        #open file dialog and store the selected path in the settings
-        filename = QFileDialog.getOpenFileName(self.dlg, "Select gdal_contour", gdalwarp_from_settings, "*")
-        self.dlg.lineEdit_gdalwarp.setText(filename)
-        s.setValue("qgis_batch-interpolation_gdalwarp", filename)
     
     def choose_gdal_contour_directory(self):
         """Opens a file dialog to choose the absolute path of gdal_contour."""
@@ -341,16 +318,10 @@ class BatchInterpolation:
     def enable_raster_clip(self):
         """Enabling and disabling of GUI elements depending on the status of a checkbox."""
         if self.dlg.checkBox_clip_raster.isChecked():
-            self.dlg.label_gdalwarp.setEnabled(True)
-            self.dlg.lineEdit_gdalwarp.setEnabled(True)
-            self.dlg.pushButton_gdalwarp.setEnabled(True)
             self.dlg.label_mask_layer.setEnabled(True)
             self.dlg.comboBox_mask_layer.setEnabled(True)
             self.insert_layers_into_combobox(self.dlg.comboBox_mask_layer)
         else:
-            self.dlg.label_gdalwarp.setEnabled(False)
-            self.dlg.lineEdit_gdalwarp.setEnabled(False)
-            self.dlg.pushButton_gdalwarp.setEnabled(False)
             self.dlg.label_mask_layer.setEnabled(False)
             self.dlg.comboBox_mask_layer.setEnabled(False)
 

@@ -3,6 +3,7 @@ import glob
 from PyQt4.QtGui import QComboBox, QProgressBar, QTableWidget, QTableWidgetItem, QApplication
 from PyQt4.QtCore import Qt, QDir
 import os
+from qgis.core import QgsVectorLayer
 
 class Controller():
     
@@ -46,7 +47,7 @@ class Controller():
                     table.setItem(current_row, 0, QTableWidgetItem(checkbox_item))
                 break
     
-    def start_batch_process(self, iface, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb, gdal_contour_dir, clip, path_to_gdalwarp, mask_layer):
+    def start_batch_process(self, iface, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb, gdal_contour_dir, clip, mask_layer):
         #init the progressbar
         pb.setValue(0)
         max = 0
@@ -81,22 +82,23 @@ class Controller():
                     attr_index += 1
             
                 #interpolate the layer with the current attribute
-                self.interpolation.interpolation(iface, layer, attr_index, attribute, interpolation_method, out_dir, resolution, clip, path_to_gdalwarp, mask_layer)
+                self.interpolation.interpolation(iface, layer, attr_index, attribute, interpolation_method, out_dir, resolution, clip, mask_layer)
                 pb.setValue(pb.value() + 1)
                 QApplication.processEvents()
         
         #create contour lines
         if contour:
-            
-            #choose the correct file format for the iteration and get the mask layer by the given name
-            file_format = ""
-            if clip:
-                file_format = "/batch_interpolation/*.tiff"
-            else:
-                file_format = "/batch_interpolation/*.asc"
-            
             #iterate over the raster files
-            for file in glob.glob(QDir.toNativeSeparators(out_dir + file_format)):
+            for file in glob.glob(QDir.toNativeSeparators(out_dir + "/batch_interpolation/*.asc")):
                 self.interpolation.contour(gdal_contour_dir, os.path.splitext(os.path.basename(file))[0], "distance", intervall, file, out_dir)
                 pb.setValue(pb.value() + 1)
-                QApplication.processEvents() 
+                QApplication.processEvents()
+        
+        #clip contour lines
+        if clip:
+            for file in glob.glob(QDir.toNativeSeparators(out_dir + "/batch_contour/*.geojson")):
+                input_layer = QgsVectorLayer(file, "contour", "ogr")
+                output_name = os.path.splitext(os.path.basename(file))[0] + "_clipped.geojson"
+                self.interpolation.clip(input_layer, mask_layer, out_dir, output_name)
+                pb.setValue(pb.value() + 1)
+                QApplication.processEvents()
