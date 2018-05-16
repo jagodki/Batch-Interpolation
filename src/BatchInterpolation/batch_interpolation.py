@@ -76,7 +76,7 @@ class BatchInterpolation:
         
         #connect signals and slots
         self.dlg.checkBox_contourLines.clicked.connect(self.enable_contour_lines)
-        self.dlg.checkBox_clip_raster.clicked.connect(self.enable_raster_clip)
+        self.dlg.checkBox_clip.clicked.connect(self.enable_clip)
         self.dlg.pushButton_output.clicked.connect(self.choose_output_directory)
         self.dlg.pushButton_gdal_contour.clicked.connect(self.choose_gdal_contour_directory)
         self.dlg.comboBox_layers.currentIndexChanged.connect(self.insert_attributes_into_table)
@@ -211,7 +211,8 @@ class BatchInterpolation:
         self.dlg.pushButton_gdal_contour.setEnabled(False)
         self.dlg.label_gdal_contour.setEnabled(False)
         self.dlg.doubleSpinBox_contourLines.setEnabled(False)
-        self.dlg.checkBox_clip_raster.setChecked(False)
+        self.dlg.checkBox_clip.setChecked(False)
+        self.dlg.checkBox_clip.setEnabled(False)
         self.dlg.label_mask_layer.setEnabled(False)
         self.dlg.comboBox_mask_layer.setEnabled(False)
         
@@ -278,8 +279,10 @@ class BatchInterpolation:
                                                 str(self.dlg.doubleSpinBox_contourLines.value()),
                                                 self.dlg.progressBar,
                                                 self.dlg.lineEdit_gdal_contour.text(),
-                                                self.dlg.checkBox_clip_raster.isChecked(),
-                                                self.dlg.comboBox_mask_layer.currentText())
+                                                self.dlg.checkBox_clip.isChecked(),
+                                                self.dlg.comboBox_mask_layer.currentText(),
+                                                self.dlg.groupBox_input,
+                                                self.dlg.groupBox_setting)
         except:
             self.iface.messageBar().pushMessage("Error", "Interpolation failed. Look into the QGIS-Log and/or the python-window for the stack trace.", level=QgsMessageBar.CRITICAL)
             QgsMessageLog.logMessage(traceback.print_exc(), level=QgsMessageLog.CRITICAL)
@@ -308,6 +311,7 @@ class BatchInterpolation:
     
     def insert_layers_into_combobox(self, combobox):
         """Populate the layer-combobox during start of the plugin."""
+        combobox.clear()
         self.controller.populate_layer_list(self.iface, combobox)
     
     def insert_attributes_into_table(self):
@@ -315,9 +319,9 @@ class BatchInterpolation:
         self.dlg.tableWidget_attributes.setRowCount(0)
         self.controller.populate_attribute_list(self.dlg.comboBox_layers.currentText(), self.dlg.tableWidget_attributes)
 
-    def enable_raster_clip(self):
+    def enable_clip(self):
         """Enabling and disabling of GUI elements depending on the status of a checkbox."""
-        if self.dlg.checkBox_clip_raster.isChecked():
+        if self.dlg.checkBox_clip.isChecked():
             self.dlg.label_mask_layer.setEnabled(True)
             self.dlg.comboBox_mask_layer.setEnabled(True)
             self.insert_layers_into_combobox(self.dlg.comboBox_mask_layer)
@@ -333,10 +337,14 @@ class BatchInterpolation:
             self.dlg.label_gdal_contour.setEnabled(True)
             self.dlg.lineEdit_gdal_contour.setEnabled(True)
             self.dlg.pushButton_gdal_contour.setEnabled(True)
+            self.dlg.checkBox_clip.setEnabled(True)
+            self.enable_clip()
         else:
             self.dlg.label_contourLines.setEnabled(False)
             self.dlg.doubleSpinBox_contourLines.setEnabled(False)
             self.dlg.label_gdal_contour.setEnabled(False)
             self.dlg.lineEdit_gdal_contour.setEnabled(False)
             self.dlg.pushButton_gdal_contour.setEnabled(False)
+            self.dlg.checkBox_clip.setEnabled(False)
+            self.enable_clip()
     

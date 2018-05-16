@@ -10,11 +10,11 @@
 name=Batch Interpolation
 qgisMinimumVersion=2.0
 description=A QGIS-plugin, which creates a batch process of the QGIS Raster Interpolation (TIN or IDW) and gdal_contour.
-version=1.0.0
+version=1.1.0
 author=Christoph Jung
 email=jagodki.cj@gmail.com
 
-about=With this plugin the user can start a batch of interpolations using different attributes of the same point layer. Creating contour lines of the interpolated raster files as a batch process is possible too. The plugin uses the QGIS-functions for IDW- and TIN-interpolation and gdal_contour for creating contour lines. Please note, that the first layer in the table of content has to be a vector layer, otherwise the plugin will crash. Further information about the usage can be found on the GitHub-page.
+about=With this plugin the user can start a batch of interpolations using different attributes of the same point layer. Creating contour lines of the interpolated raster files in the same batch process is possible too. The resulting contour lines can be clipped by a mask layer. The plugin uses the QGIS-functions for IDW- and TIN-interpolation, gdal_contour for creating contour lines and the clip-function of QGIS. Please note, that the first layer in the table of content has to be a vector layer, otherwise the plugin will crash. Further information about the usage can be found on the GitHub-page.
 
 tracker=https://github.com/jagodki/Batch-Interpolation/issues
 repository=https://github.com/jagodki/Batch-Interpolation
@@ -24,10 +24,11 @@ repository=https://github.com/jagodki/Batch-Interpolation
 
 # Uncomment the following line and add your changelog:
 changelog=
+	1.1.0 - add possibility to clip the contour lines by a mask layer
 	1.0.0 - initial release
 
 # Tags are comma separated with spaces allowed
-tags=point, vector, interpolation, TIN, IDW, contour, isolines, gdal
+tags=point, vector, interpolation, TIN, IDW, contour, isolines, gdal, clip
 
 homepage=https://github.com/jagodki/Batch-Interpolation
 category=Raster

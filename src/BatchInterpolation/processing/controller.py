@@ -47,7 +47,11 @@ class Controller():
                     table.setItem(current_row, 0, QTableWidgetItem(checkbox_item))
                 break
     
-    def start_batch_process(self, iface, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb, gdal_contour_dir, clip, mask_layer):
+    def start_batch_process(self, iface, table, layer_name, interpolation_method, contour, out_dir, resolution, intervall, pb, gdal_contour_dir, clip, mask_layer, gb_input, gb_settings):
+        #disable gui elements during processing
+        gb_input.setEnabled(False)
+        gb_settings.setEnabled(False)
+        
         #init the progressbar
         pb.setValue(0)
         max = 0
@@ -56,10 +60,13 @@ class Controller():
             if table.item(row, 0).checkState() == Qt.Checked:
                 max += 1
     
-        if contour:
+        if contour and clip:
+            pb.setMaximum(3 * max)
+        elif contour or clip:
             pb.setMaximum(2 * max)
         else:
             pb.setMaximum(max)
+        
         QApplication.processEvents()
         
         #get the layer with the specified name
@@ -102,3 +109,7 @@ class Controller():
                 self.interpolation.clip(input_layer, mask_layer, out_dir, output_name)
                 pb.setValue(pb.value() + 1)
                 QApplication.processEvents()
+
+        #enable gui elements after processing
+        gb_input.setEnabled(True)
+        gb_settings.setEnabled(True)
