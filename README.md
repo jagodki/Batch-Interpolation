@@ -5,7 +5,7 @@ A QGIS-plugin, which creates a batch process of the QGIS Raster Interpolation (T
 Imagine you have a point layer with different attributes and you want to create a raster interpolation for each of the attributes. It can be realy annoying to start the interpolation for each attribute manually. And the interpolation of TIN and IDW from QGIS (under the menu Raster-Interpolation) can not be used in the graphic process modeller. With this plugin the user must just select the attributes, which should be used for the interpolation (instead of the z-coordinate) and than starts the batch process. The plugin allows also to create contour lines of each created raster file using gdal_contour in the same batch process. The raster files and the contour lines will be calculated in a row without the need of starting a new calculation for the next attribute.
 
 ## Changelog
-1.1.0 - add possibility to clip the contour lines by a mask layer
+1.1.0 - add possibility to clip the contour lines by a mask layer<br>
 1.0.0 - initial release
 
 ## Usage
